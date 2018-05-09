@@ -14,9 +14,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class OnlineCar {
 
     private ConcurrentHashMap<String, Channel> cache = new ConcurrentHashMap<>();
-    //因为小车没有唯一标识，先用这个代替（正确的方案是小车端会发送一个唯一的标识符过来作为key）
-    private AtomicInteger carGenerator = new AtomicInteger(0);
 
+    /**
+     * 因为小车没有唯一标识，先用这个代替（正确的方案是小车端会发送一个唯一的标识符过来作为key）
+     */
+    private AtomicInteger carGenerator = new AtomicInteger(0);
 
     /**
      * 静态内部类存储单例对象
@@ -28,7 +30,7 @@ public class OnlineCar {
     /**
      * 获取单例对象
      *
-     * @return
+     * @return instance
      */
     public static OnlineCar getInstance() {
         return OnlineCarHolder.cache;
@@ -44,7 +46,7 @@ public class OnlineCar {
     /**
      * 移除小车连接
      *
-     * @param carId
+     * @param carId carId
      */
     public void remove(String carId) {
         cache.remove(carId);
@@ -53,8 +55,8 @@ public class OnlineCar {
     /**
      * 获取相应的小车连接
      *
-     * @param carId
-     * @return
+     * @param carId carId
+     * @return 通道连接
      */
     public Channel get(String carId) {
         return cache.get(carId);
@@ -63,8 +65,8 @@ public class OnlineCar {
     /**
      * 获取相应的carId
      *
-     * @param channel
-     * @return
+     * @param channel 通道
+     * @return carId
      */
     public String get(Channel channel) {
         for (Map.Entry<String, Channel> entry : cache.entrySet()) {

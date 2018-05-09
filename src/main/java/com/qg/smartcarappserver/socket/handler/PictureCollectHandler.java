@@ -8,8 +8,6 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -30,7 +28,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 @Slf4j
 public class PictureCollectHandler extends ChannelInboundHandlerAdapter {
-    private final static Logger LOGGER = LoggerFactory.getLogger(PictureCollectHandler.class);
 
     private String carId;
     private AtomicInteger pictureGenerator = new AtomicInteger(0);
@@ -59,7 +56,7 @@ public class PictureCollectHandler extends ChannelInboundHandlerAdapter {
         Future<Boolean> future = executor.submit(task);
         if (future.get()) {
             if (pictureGenerator.incrementAndGet() % 10 == 0) {
-                LOGGER.info("executor >> : execute: " + pictureGenerator.get());
+                log.info("executor >> : execute: " + pictureGenerator.get());
             }
         }
 //        else {
@@ -71,10 +68,9 @@ public class PictureCollectHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) {
-        LOGGER.info("channel is inactive. carId Is : >> : {}", carId);
+        log.info("channel is inactive. carId Is : >> : {}", carId);
         ctx.fireChannelInactive();
     }
-
 
     private static class WriteTask implements Callable<Boolean> {
 
@@ -90,10 +86,9 @@ public class PictureCollectHandler extends ChannelInboundHandlerAdapter {
 
         @Override
         public Boolean call() throws Exception {
-
             File dirname = new File(GlobalConfig.PICTURE_PATH + carId);
             if (!dirname.exists()) {
-                LOGGER.info("APP端连接,开始重新计数");
+                log.info("APP端连接,开始重新计数");
                 pictureGenerator.set(0);
                 FileUtil.createDir(GlobalConfig.PICTURE_PATH + carId);
                 return false;

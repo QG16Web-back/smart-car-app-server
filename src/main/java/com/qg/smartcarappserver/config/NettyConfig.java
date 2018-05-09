@@ -19,11 +19,10 @@ public class NettyConfig {
     /**
      * netty服务器注册
      *
-     * @return
+     * @return Object
      */
     @Bean
     public Object gateServer() {
-        GateServer gateServer = new GateServer(port);
-        return gateServer;
+        return new GateServer(port);
     }
 }

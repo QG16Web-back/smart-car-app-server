@@ -16,22 +16,21 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.DelimiterBasedFrameDecoder;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
 
 /**
  * Created by hunger on 2017/8/3.
+ * Netty服务器配置类
+ *
+ * @author 小铭
  */
 @Slf4j
 public class GateServer {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(GateServer.class);
-
     public GateServer(int port) {
         startGateServer(port);
-//        log.info("netty 服务器已启动");
+        log.info("netty 服务器已启动");
     }
 
     /**
@@ -61,21 +60,19 @@ public class GateServer {
         // 绑定端口
         bootstrap.bind(new InetSocketAddress(port)).addListener((ChannelFutureListener) future -> {
             if (future.isSuccess()) {
-                LOGGER.info("[GateServer] Started Successed, registry is complete, waiting for client connect...");
+                log.info("[GateServer] Started Succeed, registry is complete, waiting for client connect...");
             } else {
-                LOGGER.error("[GateServer] Started Failed, registry is incomplete");
+                log.error("[GateServer] Started Failed, registry is incomplete");
             }
         });
     }
 
     private static void bindConnectionOptions(ServerBootstrap bootstrap) {
-
         bootstrap.option(ChannelOption.SO_BACKLOG, 1024);
         bootstrap.childOption(ChannelOption.SO_LINGER, 0);
         bootstrap.childOption(ChannelOption.TCP_NODELAY, true);
         // 心跳机制暂时使用TCP选项
         bootstrap.childOption(ChannelOption.SO_KEEPALIVE, true);
-
     }
 
 }

@@ -9,7 +9,6 @@ import org.springframework.jms.core.JmsTemplate;
 
 import javax.jms.ConnectionFactory;
 
-
 /**
  * Created by 小排骨 on 2017/9/27.
  */
@@ -30,9 +29,8 @@ public class JmsConfiguration {
     }
 
 
-    @Bean(value = "jmsMessagingTemplate")
+    @Bean("jmsMessagingTemplate")
     JmsMessagingTemplate jmsMessagingTemplate(JmsTemplate jmsTemplate) {
-        JmsMessagingTemplate messagingTemplate = new JmsMessagingTemplate(jmsTemplate);
-        return messagingTemplate;
+        return new JmsMessagingTemplate(jmsTemplate);
     }
 }

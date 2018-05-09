@@ -18,15 +18,17 @@ import java.util.Map;
 public class HandShake implements HandshakeInterceptor {
 
     @Override
-    public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler,
-                                   Map<String, Object> attributes) {
+    public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler, Map<String, Object>
+            attributes) {
         if (request instanceof ServletServerHttpRequest) {
             ServletServerHttpRequest servletRequest = (ServletServerHttpRequest) request;
-            // 标记用户,url“?”后面直接跟要连接的carId
+            // 标记用户, url“?”后面直接跟要连接的carId
             String connectURI = servletRequest.getURI().toString();
+            log.info("URL >>>>>>>>> " + connectURI);
             String uid = connectURI.substring(connectURI.lastIndexOf("?") + 1, connectURI.length());
             if (!"".equals(uid)) {
                 attributes.put("uid", uid);
+                log.info("uid", uid);
             } else {
                 attributes.put("uid", "o1x0C0TjXP62Yn-mqxhVD-mOVAiY");
             }
@@ -35,8 +37,7 @@ public class HandShake implements HandshakeInterceptor {
     }
 
     @Override
-    public void afterHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler,
-                               Exception exception) {
-//		log.info("webscoket 通道开通 >> " );
+    public void afterHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler, Exception exception) {
+        log.info("webSocket 通道开通 >> " + request.getRemoteAddress().toString());
     }
 }

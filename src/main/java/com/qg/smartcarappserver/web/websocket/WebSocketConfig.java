@@ -1,18 +1,19 @@
 package com.qg.smartcarappserver.web.websocket;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 
 /**
- * WebScoket配置处理器
+ * WebSocket配置处理器
+ *
+ * @author 小铭
  */
-@Component
+@Configuration
 @EnableWebSocket
-public class WebSocketConfig extends WebMvcConfigurerAdapter implements WebSocketConfigurer {
+public class WebSocketConfig implements WebSocketConfigurer {
 
     private final MyWebSocketHandler handler;
 

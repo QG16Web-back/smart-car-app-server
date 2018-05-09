@@ -3,11 +3,11 @@ package com.qg.smartcarappserver.socket.handler;
 import com.qg.smartcarappserver.config.constant.GlobalConfig;
 import com.qg.smartcarappserver.global.cache.OnlineCar;
 import com.qg.smartcarappserver.util.FileUtil;
+import io.netty.buffer.Unpooled;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 
@@ -17,7 +17,6 @@ import java.io.File;
 @Slf4j
 public class GateServerHandler extends ChannelInboundHandlerAdapter {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(GateServerHandler.class);
     private String carId;
 
     @Override
@@ -27,7 +26,7 @@ public class GateServerHandler extends ChannelInboundHandlerAdapter {
         }
         carId = OnlineCar.getInstance().put(ctx.channel());
 
-        LOGGER.info("client has connect. the carId is >> : {}", carId);
+        log.info("client has connect. the carId is >> : {}", carId);
         FileUtil.deleteAllFiles(new File(GlobalConfig.PICTURE_PATH + carId));
         FileUtil.createDir(GlobalConfig.PICTURE_PATH + carId);
         ctx.fireChannelActive();
@@ -39,15 +38,15 @@ public class GateServerHandler extends ChannelInboundHandlerAdapter {
     }
 
 
-//    @Override
-//    public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
-//        ctx.writeAndFlush(Unpooled.EMPTY_BUFFER)
-//                .addListener(ChannelFutureListener.CLOSE);
-//    }
+    @Override
+    public void channelReadComplete(ChannelHandlerContext ctx) {
+        ctx.writeAndFlush(Unpooled.EMPTY_BUFFER)
+                .addListener(ChannelFutureListener.CLOSE);
+    }
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) {
-        LOGGER.info("client has disconnect. the carId is >> : {}", carId);
+        log.info("client has disconnect. the carId is >> : {}", carId);
         OnlineCar.getInstance().remove(carId);
         FileUtil.deleteAllFiles(new File(GlobalConfig.PICTURE_PATH + carId));
         ctx.fireChannelInactive();
@@ -55,7 +54,7 @@ public class GateServerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        LOGGER.error(cause.getMessage());
+        log.error(cause.getMessage());
         ctx.fireExceptionCaught(cause);
     }
 

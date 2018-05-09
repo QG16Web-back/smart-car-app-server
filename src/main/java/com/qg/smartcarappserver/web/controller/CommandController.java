@@ -4,8 +4,6 @@ package com.qg.smartcarappserver.web.controller;
 import com.qg.smartcarappserver.config.constant.GlobalConfig;
 import com.qg.smartcarappserver.global.cache.OnlineCar;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -20,7 +18,6 @@ import java.util.List;
 @Slf4j
 public class CommandController {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(CommandController.class);
 
     @GetMapping("onlineCar")
     @ResponseBody
@@ -28,7 +25,7 @@ public class CommandController {
         // 一个蹩脚的操作
         if (GlobalConfig.PICTURE_PATH == null) {
             GlobalConfig.PICTURE_PATH = session.getServletContext().getRealPath("/picture/");
-            LOGGER.info("图片文件路径初始化成功 >> {}", GlobalConfig.PICTURE_PATH);
+            log.info("图片文件路径初始化成功 >> {}", GlobalConfig.PICTURE_PATH);
         }
         return OnlineCar.getInstance().keySet();
     }

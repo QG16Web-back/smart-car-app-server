@@ -1,8 +1,11 @@
 package com.qg.smartcarappserver.entity;
 
+import lombok.Data;
+
 /**
  * Created by 小排骨 on 2017/9/22.
  */
+@Data
 public class Command {
 
     /**
@@ -14,29 +17,4 @@ public class Command {
      * 控制指令
      */
     private String content;
-
-    public long getCarId() {
-        return carId;
-    }
-
-    public void setCarId(long carId) {
-        this.carId = carId;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    @Override
-    public String toString() {
-        return "Command{" +
-                "carId=" + carId +
-                ", content='" + content + '\'' +
-                '}';
-    }
 }
