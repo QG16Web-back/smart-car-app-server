@@ -23,28 +23,34 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * WebSocket处理器
+ * WebSocket处理器.
  *
  * @author LINhunger
  */
 @Component
 @Slf4j
-public class MyWebSocketHandler implements WebSocketHandler {
+public class CarWebSocketHandler implements WebSocketHandler {
 
+    /**
+     * json转换类.
+     */
     private final Gson gson;
 
+    /**
+     * 使用ConcurrentHashMap缓存uid和session.
+     */
     private static ConcurrentHashMap<String, WebSocketSession> onlineSocket = new ConcurrentHashMap<>();
 
     @Autowired
-    public MyWebSocketHandler(Gson gson) {
+    public CarWebSocketHandler(final Gson gson) {
         this.gson = gson;
     }
 
     /**
-     * 建立连接后
+     * 建立连接后.
      */
     @Override
-    public void afterConnectionEstablished(WebSocketSession session) {
+    public void afterConnectionEstablished(final WebSocketSession session) {
         String uid = (String) session.getAttributes().get("uid");
         log.info("建立连接 >> : {}", uid);
         onlineSocket.put(uid, session);
@@ -52,10 +58,10 @@ public class MyWebSocketHandler implements WebSocketHandler {
     }
 
     /**
-     * 消息处理，在客户端通过WebSocket API发送的消息会经过这里，然后进行相应的处理
+     * 消息处理，在客户端通过WebSocket API发送的消息会经过这里，然后进行相应的处理.
      */
     @Override
-    public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) {
+    public void handleMessage(final WebSocketSession session, final WebSocketMessage<?> message) {
         log.info("接受信息 >> {}", message.getPayload());
         if (message.getPayloadLength() == 0) {
             log.info("信息长度为空");
@@ -82,12 +88,12 @@ public class MyWebSocketHandler implements WebSocketHandler {
     }
 
     /**
-     * 向channel转发消息
+     * 向channel转发消息.
      *
      * @param carId   carId
      * @param content 控制指令
      */
-    private void deliverCommand(String carId, String content) {
+    private void deliverCommand(final String carId, final String content) {
         Channel channel = OnlineCar.getInstance().get(carId);
         if (channel == null) {
             return;
@@ -103,10 +109,10 @@ public class MyWebSocketHandler implements WebSocketHandler {
     }
 
     /**
-     * 消息传输错误处理
+     * 消息传输错误处理.
      */
     @Override
-    public void handleTransportError(WebSocketSession session, Throwable exception) {
+    public void handleTransportError(final WebSocketSession session, final Throwable exception) {
         if (session.isOpen()) {
             try {
                 session.close();
@@ -128,7 +134,7 @@ public class MyWebSocketHandler implements WebSocketHandler {
      * 关闭连接后
      */
     @Override
-    public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) {
+    public void afterConnectionClosed(final WebSocketSession session, final CloseStatus closeStatus) {
         String uid = (String) session.getAttributes().get("uid");
         // 关闭并移除相依channel
         Channel channel = OnlineCar.getInstance().get(uid);
@@ -152,12 +158,13 @@ public class MyWebSocketHandler implements WebSocketHandler {
     }
 
     /**
-     * 给某个用户发送消息
+     * 给某个用户发送消息.
      *
+     * @param uid uid
      * @param message 信息
      * @throws IOException ioException
      */
-    public void sendMessageToUser(String uid, TextMessage message) throws IOException {
+    public void sendMessageToUser(final String uid, final TextMessage message) throws IOException {
         WebSocketSession session = onlineSocket.get(uid);
         if (session != null && session.isOpen()) {
             session.sendMessage(message);

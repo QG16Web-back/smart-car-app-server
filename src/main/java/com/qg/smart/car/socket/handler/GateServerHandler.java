@@ -9,15 +9,18 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Dell
- * @date 2016/2/1
+ * Date 2016/2/1
  */
 @Slf4j
 public class GateServerHandler extends ChannelInboundHandlerAdapter {
 
+    /**
+     * 小车ID.
+     */
     private String carId;
 
     @Override
-    public void channelActive(ChannelHandlerContext ctx) {
+    public void channelActive(final ChannelHandlerContext ctx) {
         // 生成一个carId并绑定连接通道
         carId = OnlineCar.getInstance().put(ctx.channel());
         log.info("client has connect. the carId is >> : {}", carId);
@@ -25,25 +28,25 @@ public class GateServerHandler extends ChannelInboundHandlerAdapter {
     }
 
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object message) {
+    public void channelRead(final ChannelHandlerContext ctx, Object message) {
         ctx.fireChannelRead(message);
     }
 
     @Override
-    public void channelReadComplete(ChannelHandlerContext ctx) {
+    public void channelReadComplete(final ChannelHandlerContext ctx) {
         ctx.writeAndFlush(Unpooled.EMPTY_BUFFER)
                 .addListener(ChannelFutureListener.CLOSE);
     }
 
     @Override
-    public void channelInactive(ChannelHandlerContext ctx) {
+    public void channelInactive(final ChannelHandlerContext ctx) {
         log.info("client has disconnect. the carId is >> : {}", carId);
         OnlineCar.getInstance().remove(carId);
         ctx.fireChannelInactive();
     }
 
     @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+    public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) {
         log.error(cause.getMessage());
         ctx.fireExceptionCaught(cause);
     }

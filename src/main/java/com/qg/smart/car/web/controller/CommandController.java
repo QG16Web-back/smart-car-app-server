@@ -14,7 +14,7 @@ import java.util.List;
 @RestController
 public class CommandController {
 
-    @GetMapping("onlineCar")
+    @GetMapping("/onlineCar")
     public List<String> getOnlineCar() {
         return OnlineCar.getInstance().keySet();
     }

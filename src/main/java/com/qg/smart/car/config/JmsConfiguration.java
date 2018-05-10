@@ -11,8 +11,8 @@ import javax.jms.ConnectionFactory;
 
 /**
  * @author 小排骨
- * @date 2017/9/27
- * 消息队列配置类
+ * Date 2017/9/27
+ * 消息队列配置类.
  */
 @Configuration
 @EnableJms
@@ -31,7 +31,7 @@ public class JmsConfiguration {
     }
 
     @Bean("jmsMessagingTemplate")
-    JmsMessagingTemplate jmsMessagingTemplate(JmsTemplate jmsTemplate) {
+    JmsMessagingTemplate jmsMessagingTemplate(final JmsTemplate jmsTemplate) {
         return new JmsMessagingTemplate(jmsTemplate);
     }
 }

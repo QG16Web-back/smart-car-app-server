@@ -8,17 +8,20 @@ import org.springframework.context.annotation.PropertySource;
 
 /**
  * @author 小排骨
- * @date 2018/1/8
+ * Date 2018/1/8
  */
 @Configuration
 @PropertySource("classpath:netty.properties")
 public class NettyConfig {
 
+    /**
+     * Netty端口.
+     */
     @Value("${netty.port}")
     private int port;
 
     /**
-     * netty服务器注册
+     * netty服务器注册.
      *
      * @return Object
      */

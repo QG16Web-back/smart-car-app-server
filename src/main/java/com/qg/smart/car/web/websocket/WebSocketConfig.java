@@ -15,10 +15,10 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 @EnableWebSocket
 public class WebSocketConfig implements WebSocketConfigurer {
 
-    private final MyWebSocketHandler handler;
+    private final CarWebSocketHandler handler;
 
     @Autowired
-    public WebSocketConfig(MyWebSocketHandler handler) {
+    public WebSocketConfig(CarWebSocketHandler handler) {
         this.handler = handler;
     }
 
