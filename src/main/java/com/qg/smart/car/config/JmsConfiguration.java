@@ -12,6 +12,7 @@ import javax.jms.ConnectionFactory;
 /**
  * @author 小排骨
  * @date 2017/9/27
+ * 消息队列配置类
  */
 @Configuration
 @EnableJms
@@ -28,7 +29,6 @@ public class JmsConfiguration {
         jmsTemplate.setPriority(999);
         return jmsTemplate;
     }
-
 
     @Bean("jmsMessagingTemplate")
     JmsMessagingTemplate jmsMessagingTemplate(JmsTemplate jmsTemplate) {

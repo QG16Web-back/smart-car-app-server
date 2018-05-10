@@ -11,6 +11,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * @author 小排骨
  * @date 2018/1/8
+ * 在线小车的缓存
  */
 public class OnlineCar {
 
@@ -86,5 +87,4 @@ public class OnlineCar {
     public List<String> keySet() {
         return new ArrayList<>(cache.keySet());
     }
-
 }

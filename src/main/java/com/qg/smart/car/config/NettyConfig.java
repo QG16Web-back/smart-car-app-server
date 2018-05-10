@@ -14,7 +14,7 @@ import org.springframework.context.annotation.PropertySource;
 @PropertySource("classpath:netty.properties")
 public class NettyConfig {
 
-    @Value("${port}")
+    @Value("${netty.port}")
     private int port;
 
     /**

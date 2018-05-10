@@ -1,10 +1,7 @@
 package com.qg.smart.car.socket;
 
 import com.qg.smart.car.socket.handler.GateServerHandler;
-import com.qg.smart.car.util.TransUtil;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
@@ -40,36 +37,34 @@ public class GateServer {
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workGroup = new NioEventLoopGroup();
 
-        ServerBootstrap bootstrap = new ServerBootstrap()
-                .group(bossGroup, workGroup)
-                .channel(NioServerSocketChannel.class)
-                .childHandler(new ChannelInitializer<SocketChannel>() {
-                    @Override
-                    protected void initChannel(SocketChannel channel) {
-                        ChannelPipeline pipeline = channel.pipeline();
-                        ByteBuf delimiter = Unpooled.copiedBuffer(TransUtil.toByteArray("FFD9"));
-                        pipeline.addLast("DelimiterBasedFrameDecoder", new DelimiterBasedFrameDecoder(100 * 1024, delimiter));
-                        pipeline.addLast("ClientMessageHandler", new GateServerHandler());
-//                        pipeline.addLast("PictureCollectHandler", new PictureCollectHandler());
-                    }
-                });
-        // 配置option
-        bindConnectionOptions(bootstrap);
-        // 绑定端口
-        bootstrap.bind(new InetSocketAddress(port)).addListener((ChannelFutureListener) future -> {
-            if (future.isSuccess()) {
-                log.info("[GateServer] Started Succeed, registry is complete, waiting for client connect...");
-            } else {
-                log.error("[GateServer] Started Failed, registry is incomplete");
-            }
-        });
-    }
-
-    private static void bindConnectionOptions(ServerBootstrap bootstrap) {
-        bootstrap.option(ChannelOption.SO_BACKLOG, 1024);
-        bootstrap.childOption(ChannelOption.SO_LINGER, 0);
-        bootstrap.childOption(ChannelOption.TCP_NODELAY, true);
-        // 心跳机制暂时使用TCP选项
-        bootstrap.childOption(ChannelOption.SO_KEEPALIVE, true);
+        try {
+            ServerBootstrap bootstrap = new ServerBootstrap()
+                    .group(bossGroup, workGroup)
+                    .channel(NioServerSocketChannel.class)
+                    .option(ChannelOption.SO_BACKLOG, 1024)
+                    .childOption(ChannelOption.SO_LINGER, 0)
+                    .childOption(ChannelOption.TCP_NODELAY, true)
+                    // 心跳机制暂时使用TCP选项
+                    .childOption(ChannelOption.SO_KEEPALIVE, true)
+                    .childHandler(new ChannelInitializer<SocketChannel>() {
+                        @Override
+                        protected void initChannel(SocketChannel channel) {
+                            ChannelPipeline pipeline = channel.pipeline();
+                            pipeline.addLast("DelimiterBasedFrameDecoder", new DelimiterBasedFrameDecoder(100 * 1024));
+                            pipeline.addLast("ClientMessageHandler", new GateServerHandler());
+                        }
+                    });
+            // 绑定端口
+            bootstrap.bind(new InetSocketAddress(port)).addListener((ChannelFutureListener) future -> {
+                if (future.isSuccess()) {
+                    log.info("[GateServer] Started Succeed, registry is complete, waiting for client connect...");
+                } else {
+                    log.error("[GateServer] Started Failed, registry is incomplete");
+                }
+            });
+        } finally {
+            bossGroup.shutdownGracefully();
+            workGroup.shutdownGracefully();
+        }
     }
 }
